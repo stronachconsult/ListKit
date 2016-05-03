@@ -12,7 +12,7 @@ import UIKit
 /// A `UITableViewCell` adopting this type can be used together
 /// with the `ArrayDataSource` class.
 public protocol ListKitCellProtocol {
-  typealias CellType
+  associatedtype CellType
   
   /// Stores the content that is represented within the cell.
   /// Types adopting this protocol should update the UI when this
@@ -25,25 +25,35 @@ public protocol ListKitCellProtocol {
 /// of the table view by setting the `array` property.
 public class ArrayDataSource<U, T where U:ListKitCellProtocol, U:UITableViewCell, T == U.CellType> : NSObject, UITableViewDataSource {
 
-  let cellIdentifier = "arrayDataSourceCell"
+    let cellIdentifier: String
   
   private let nib: UINib?
 
   /// The content represented in the table view
   public var array: Array<T>
   
-  /// Initialize with a custom cell type
-  public init (array:Array<T> = [], cellType: U.Type) {
-    self.array = array
-    self.nib = nil
-  }
-  
-  /// Initialize with a custom cell type and a NIB file from which 
-  /// the cell should be loaded
-  public init (array:Array<T> = [], cellType: U.Type, nib: UINib) {
-    self.array = array
-    self.nib = nib
-  }
+    /// Initialize with a custom cell type
+    public init (array:Array<T> = [], cellType: U.Type) {
+        self.array = array
+        self.nib = nil
+        self.cellIdentifier = "arrayDataSourceCell"
+    }
+    
+    /// Initialize with a custom cell type and a NIB file from which
+    /// the cell should be loaded
+    public init (array:Array<T> = [], cellType: U.Type, nib: UINib) {
+        self.array = array
+        self.nib = nib
+        self.cellIdentifier = "arrayDataSourceCell"
+    }
+    
+    /// Initialize with a custom cell type and a Storyboard cell identifier from which
+    /// the cell should be loaded
+    public init (array:Array<T> = [], cellType: U.Type, cellIdentifier: String) {
+        self.array = array
+        self.nib = nil
+        self.cellIdentifier = cellIdentifier
+    }
   
   public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return array.count
